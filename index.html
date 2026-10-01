@@ -74,6 +74,13 @@
   .status.ok { color: #7ee0a2; }
   .status.err { color: #ff8a8a; }
 
+  .footer {
+    flex: 0 0 auto; padding: 5px 16px; font-size: 12px; color: var(--muted);
+    background: var(--bar); border-top: 1px solid var(--border); text-align: right;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
   /* ===== Dark editor frame ===== */
   .jsoneditor.jsoneditor-mode-code,
   .jsoneditor.jsoneditor-mode-tree { border-color: var(--border) !important; }
@@ -180,6 +187,10 @@
   </div>
 
   <div id="status" class="status">Ready</div>
+
+  <footer class="footer">
+    Inspired by <a href="https://jsonparser.org" target="_blank" rel="noopener noreferrer">jsonparser.org</a> &mdash; runs 100% locally, no captcha.
+  </footer>
 
   <div id="page-drop"><div class="card">Drop JSON file to load</div></div>
 
