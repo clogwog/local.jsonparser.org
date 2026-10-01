@@ -92,3 +92,7 @@ required notices are included:
   with licenses and links.
 
 
+
+---
+
+Built by [clogwog.net](https://clogwog.net).
