@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSON Parser - Local</title>
+<link rel="stylesheet" href="vendor/jsoneditor/jsoneditor.min.css">
+<style>
+  :root {
+    --bg: #1e1f1c;
+    --panel: #272822;
+    --panel-dark: #1f201b;
+    --bar: #191a17;
+    --border: #3e3d32;
+    --fg: #f8f8f2;
+    --muted: #9a9a90;
+    --accent: #149dcc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    display: flex; flex-direction: column; height: 100vh;
+    background: var(--bg); color: var(--fg);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+
+  .topnav {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bar); color: #fff; padding: 8px 16px; flex: 0 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .topnav .brand { font-weight: 700; letter-spacing: .5px; }
+  .topnav .spacer { flex: 1; }
+  .topnav button, .topnav label {
+    background: #343a40; color: #fff; border: 1px solid var(--border); border-radius: 4px;
+    padding: 7px 14px; font-size: 14px; cursor: pointer; font-weight: 500;
+  }
+  .topnav button:hover, .topnav label:hover { background: var(--accent); border-color: var(--accent); }
+  .topnav input[type=file] { display: none; }
+
+  .layout { flex: 1 1 auto; display: flex; min-height: 0; padding: 10px; gap: 10px; }
+  .pane { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+  .panel-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .editor-wrap { position: relative; flex: 1 1 auto; min-height: 0; display: flex; }
+  .editor { flex: 1 1 auto; min-height: 0; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+
+  .drop-overlay {
+    position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+    background: rgba(20, 157, 204, .18); border: 2px dashed var(--accent); border-radius: 6px;
+    color: var(--fg); font-size: 18px; font-weight: 600; z-index: 50; pointer-events: none;
+  }
+  .editor-wrap.dragover .drop-overlay { display: flex; }
+
+  #page-drop {
+    position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+    background: rgba(30, 31, 28, .82); z-index: 9999; pointer-events: none;
+  }
+  #page-drop.show { display: flex; }
+  #page-drop .card {
+    border: 3px dashed var(--accent); border-radius: 12px; padding: 40px 64px;
+    color: var(--fg); font-size: 24px; font-weight: 700; background: rgba(39, 40, 34, .9);
+  }
+
+  .center-col {
+    flex: 0 0 220px; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 0 4px;
+  }
+  .center-col button, .center-col select {
+    width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border);
+    background: #343a40; color: #fff; font-size: 14px; font-weight: 500; cursor: pointer;
+  }
+  .center-col button:hover { background: var(--accent); border-color: var(--accent); }
+
+  .status { flex: 0 0 auto; padding: 6px 16px; font-size: 13px; background: var(--bar); color: var(--muted); min-height: 28px; border-top: 1px solid var(--border); }
+  .status.ok { color: #7ee0a2; }
+  .status.err { color: #ff8a8a; }
+
+  /* ===== Dark editor frame ===== */
+  .jsoneditor.jsoneditor-mode-code,
+  .jsoneditor.jsoneditor-mode-tree { border-color: var(--border) !important; }
+  .jsoneditor { color: var(--fg); background: var(--panel); }
+  .jsoneditor-menu, .jsoneditor-frame {
+    background: var(--panel-dark) !important; border-color: var(--border) !important; color: var(--fg) !important;
+  }
+  .jsoneditor div.jsoneditor-tree,
+  .jsoneditor .jsoneditor-outer,
+  .jsoneditor div.jsoneditor {
+    background: var(--panel) !important;
+    color: var(--fg) !important;
+  }
+  .jsoneditor .jsoneditor-tree td,
+  .jsoneditor .jsoneditor-tree .jsoneditor-field,
+  .jsoneditor .jsoneditor-tree .jsoneditor-value { border-color: var(--border) !important; }
+  .jsoneditor .jsoneditor-tree button.jsoneditor-button:focus,
+  .jsoneditor .jsoneditor-tree button.jsoneditor-button:hover { background-color: #3e3d32 !important; }
+  .jsoneditor .jsoneditor-tree button.jsoneditor-dragarea { opacity: .55; filter: invert(1); }
+
+  .jsoneditor-contextmenu .jsoneditor-menu {
+    background: #272822 !important; border-color: var(--border) !important; color: var(--fg) !important;
+  }
+  .jsoneditor-contextmenu .jsoneditor-menu button { color: var(--fg) !important; }
+  .jsoneditor-contextmenu .jsoneditor-menu button:hover,
+  .jsoneditor-contextmenu .jsoneditor-menu button:focus { color: #fff !important; background-color: #3e3d32 !important; }
+  .jsoneditor-navigation-bar { background: var(--panel-dark) !important; border-color: var(--border) !important; color: var(--muted) !important; }
+  .jsoneditor-statusbar { background-color: var(--panel-dark) !important; border-top-color: var(--border) !important; color: var(--muted) !important; }
+  .jsoneditor .jsoneditor-menu > button,
+  .jsoneditor .jsoneditor-menu .jsoneditor-modes > button,
+  .jsoneditor .jsoneditor-icon,
+  .jsoneditor .jsoneditor-button { filter: invert(1) brightness(1.6); }
+  .jsoneditor .jsoneditor-menu button.jsoneditor-selected { filter: none; }
+  .jsoneditor-separator { border-top-color: var(--border) !important; color: var(--muted) !important; }
+  .jsoneditor-field { color: #a6e22e !important; }
+  .jsoneditor-value.jsoneditor-string,
+  .jsoneditor-value.jsoneditor-url { color: #e6db74 !important; }
+  .jsoneditor-value.jsoneditor-number { color: #ae81ff !important; }
+  .jsoneditor-value.jsoneditor-boolean { color: #66d9ef !important; }
+  .jsoneditor-value.jsoneditor-null { color: #66d9ef !important; }
+  .jsoneditor-value.jsoneditor-invalid { color: #ff8a8a !important; }
+  .jsoneditor-value[contenteditable=true]:hover { background-color: #3e3d32 !important; border-color: #75715e !important; }
+  .jsoneditor-value.jsoneditor-highlight-active:hover { background-color: #49483e !important; border-color: #75715e !important; }
+
+  /* ===== Monokai theme for Ace code editor ===== */
+  .jsoneditor .ace-jsoneditor.ace_editor { background-color: #272822 !important; color: #f8f8f2 !important; }
+  .jsoneditor .ace-jsoneditor .ace_scroller { background-color: #272822 !important; }
+  .jsoneditor .ace-jsoneditor .ace_text-layer { color: #f8f8f2 !important; }
+  .jsoneditor .ace-jsoneditor .ace_gutter { background: #1f201b !important; color: #75715e !important; }
+  .jsoneditor .ace-jsoneditor .ace_gutter-active-line { background-color: #32332c !important; }
+  .jsoneditor .ace-jsoneditor .ace_print-margin { background: #3e3d32 !important; }
+  .jsoneditor .ace-jsoneditor .ace_variable { color: #a6e22e !important; }
+  .jsoneditor .ace-jsoneditor .ace_string { color: #e6db74 !important; }
+  .jsoneditor .ace-jsoneditor .ace_numeric,
+  .jsoneditor .ace-jsoneditor .ace_constant.ace_numeric { color: #ae81ff !important; }
+  .jsoneditor .ace-jsoneditor .ace_constant.ace_language { color: #ae81ff !important; }
+  .jsoneditor .ace-jsoneditor .ace_keyword { color: #f92672 !important; }
+  .jsoneditor .ace-jsoneditor .ace_keyword.ace_operator,
+  .jsoneditor .ace-jsoneditor .ace_punctuation { color: #f8f8f2 !important; }
+  .jsoneditor .ace-jsoneditor .ace_comment { color: #75715e !important; }
+  .jsoneditor .ace-jsoneditor .ace_cursor { border-left: 2px solid #f8f8f2 !important; }
+  .jsoneditor .ace-jsoneditor .ace_marker-layer .ace_selection { background: #49483e !important; }
+  .jsoneditor .ace-jsoneditor .ace_marker-layer .ace_active-line { background: #3e3d32 !important; }
+  .jsoneditor .ace-jsoneditor .ace_marker-layer .ace_bracket { border: 1px solid #75715e !important; }
+  .jsoneditor .ace-jsoneditor .ace_invisible { color: #75715e !important; }
+</style>
+</head>
+<body>
+  <div class="topnav">
+    <span class="brand">JSON Parser</span>
+    <button id="btn-new">New</button>
+    <label for="fileToLoad">Open File</label>
+    <input type="file" id="fileToLoad" accept=".json,.txt,application/json">
+    <button id="btn-url">Load URL</button>
+    <button id="btn-copy">Copy Left</button>
+    <button id="btn-download">Download</button>
+    <span class="spacer"></span>
+  </div>
+
+  <div class="layout">
+    <div class="pane" id="left-pane">
+      <div class="panel-title">Raw JSON (code)</div>
+      <div class="editor-wrap" id="left-wrap">
+        <div id="jsoneditor" class="editor"></div>
+      </div>
+    </div>
+
+    <div class="center-col">
+      <select id="tab-value" title="Indentation">
+        <option value="2">2 Tab</option>
+        <option value="3">3 Tab</option>
+        <option value="4">4 Tab</option>
+      </select>
+      <button id="beautifyRToL" title="Format / parse into tree">JSON Parser &raquo;</button>
+      <button id="beautifyLToR" title="Push tree back to raw">&laquo; JSON Format</button>
+    </div>
+
+    <div class="pane">
+      <div class="panel-title">Formatted (tree)</div>
+      <div class="editor-wrap">
+        <div id="jsoneditor-right" class="editor"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="status" class="status">Ready</div>
+
+  <div id="page-drop"><div class="card">Drop JSON file to load</div></div>
+
+  <script src="vendor/jsoneditor/jsoneditor.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
