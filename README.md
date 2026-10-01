@@ -120,3 +120,8 @@ No special permissions are requested.
 
 Application code here is free to use. Bundled [jsoneditor](https://github.com/josdejong/jsoneditor)
 is MIT licensed; retain its license/attribution if you redistribute it.
+
+## A note to Jos de Jong
+
+Hey Jos, als je het erg vindt haal ik zo weer weg. laat het weten en hij is 'gone'
+
