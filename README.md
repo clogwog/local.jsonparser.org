@@ -47,53 +47,6 @@ Bundled third-party code (in `vendor/`):
 
 - **jsoneditor 9.10.5** — MIT, © Jos de Jong. Includes its bundled Ace editor.
 
-## How it works
-
-Plain HTML/CSS/JS. No build step, no dependencies to install.
-
-```
-jsonparser/
-├── manifest.json          # Chrome/Brave MV3 manifest
-├── background.js          # opens the tool in a tab on toolbar click
-├── index.html             # the whole UI + Monokai theme overrides
-├── app.js                 # editor wiring: parse, format, tabs, file/drag/URL
-├── icons/                 # toolbar icons (generated PNGs)
-├── screenshots/
-└── vendor/jsoneditor/     # jsoneditor.min.js/.css + icon sprite (offline)
-```
-
-- `index.html` builds two `JSONEditor` instances — left in `code` mode (Ace),
-  right in `tree` mode.
-- `app.js` reads the left editor's text, runs `JSON.parse`, pretty-prints with
-  the selected indentation, and pushes the object into the right editor.
-- The dark theme is pure CSS in `index.html`, overriding the bundled light
-  theme's hardcoded colors (Ace tokens via `.ace-jsoneditor .ace_*`, tree values
-  via `.jsoneditor-value.*`, plus the frame, status bar, and menus).
-- Ace's syntax worker is disabled (`session.setUseWorker(false)`) because the
-  MV3 extension CSP blocks blob workers.
-- `background.js` uses `chrome.action.onClicked` (no popup) to open
-  `index.html` in a full tab — better than a cramped popup for JSON work.
-
-## Use it as a web page
-
-Clone the repo:
-
-```bash
-git clone git@github.com:clogwog/local.jsonparser.org.git
-cd local.jsonparser.org
-```
-
-Then either open `index.html` directly by double-clicking it (`file://`).
-Everything works except **Load URL** and sometimes clipboard access.
-
-Or serve it:
-
-```bash
-python3 -m http.server 8000
-```
-
-Then open http://localhost:8000.
-
 ## Install as a Chrome / Brave extension
 
 Clone the repo first:
@@ -115,11 +68,6 @@ No special permissions are requested.
   site's server-side proxy is intentionally gone.
 - There is no "save online" — that feature required a backend. Use **Download**
   instead.
-
-## License
-
-Application code here is free to use. Bundled [jsoneditor](https://github.com/josdejong/jsoneditor)
-is MIT licensed; retain its license/attribution if you redistribute it.
 
 ## A note to Jos de Jong
 
