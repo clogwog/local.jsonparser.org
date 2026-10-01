@@ -45,7 +45,7 @@ and page-wide drag-and-drop.
 
 Bundled third-party code (in `vendor/`):
 
-- **jsoneditor 9.10.5** — MIT, © Jos de Jong. Includes its bundled Ace editor.
+- **jsoneditor 9.10.5** — Apache-2.0, © Jos de Jong. Includes its bundled Ace editor.
 
 ## Install as a Chrome / Brave extension
 
@@ -72,4 +72,18 @@ No special permissions are requested.
 ## A note to Jos de Jong
 
 Hey Jos, als je het erg vindt haal ik zo weer weg. laat het weten en hij is 'gone'
+
+## License & attribution
+
+This project is built on [JSONEditor](https://github.com/josdejong/jsoneditor)
+by Jos de Jong, which is licensed under the **Apache License 2.0** (not MIT).
+The vendored files in `vendor/jsoneditor/` are redistributed unmodified, and the
+required notices are included:
+
+- [`LICENSE`](LICENSE) — Apache License 2.0 (this project and the vendored library).
+- [`NOTICE`](NOTICE) — attribution notice for JSONEditor (also copied to `vendor/jsoneditor/NOTICE`).
+- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — every bundled component
+  (Ace editor, ajv, jmespath, jsonrepair, etc.) and the Material Design icon,
+  with licenses and links.
+
 
