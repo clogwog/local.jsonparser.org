@@ -1,5 +1,10 @@
 # JSON Parser — Local
 
+> **This is a browser extension (Chrome / Brave, Manifest V3) that runs all of its
+> code locally.** Everything — parsing, formatting, the editor, and the UI — happens
+> on your own machine. No server, no backend, no network calls, no data ever leaves
+> your browser.
+
 Born out of pure frustration with the **captcha on [jsonparser.org](https://jsonparser.org)** —
 waiting on a Cloudflare challenge just to paste a bit of JSON is absurd. So here's
 the same tool, minus the gatekeeping: it runs entirely on your machine, offline,
@@ -10,7 +15,7 @@ drag-and-drop raw JSON, hit **JSON Parser**, and instantly get a formatted,
 collapsible tree on the right. Dark **Monokai** theme by default. No ads, no
 accounts, no network calls, no Cloudflare, no captcha — just a local page.
 
-Ships both as a plain web page and as a Chrome / Brave (MV3) extension.
+Ships as a Chrome / Brave (MV3) extension, and also works as a plain web page.
 
 ![Main interface](screenshots/main.png)
 
