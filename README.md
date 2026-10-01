@@ -95,4 +95,4 @@ required notices are included:
 
 ---
 
-Built by [clogwog.net](https://clogwog.net).
+Built by [clogwog.net](https://clogwog.net). Source: [github.com/clogwog/local.jsonparser.org](https://github.com/clogwog/local.jsonparser.org).
