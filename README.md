@@ -1,9 +1,14 @@
 # JSON Parser — Local
 
+Born out of pure frustration with the **captcha on [jsonparser.org](https://jsonparser.org)** —
+waiting on a Cloudflare challenge just to paste a bit of JSON is absurd. So here's
+the same tool, minus the gatekeeping: it runs entirely on your machine, offline,
+with nothing between you and your data.
+
 An offline, no-nonsense JSON formatter, parser, and tree viewer. Paste, open, or
 drag-and-drop raw JSON, hit **JSON Parser**, and instantly get a formatted,
 collapsible tree on the right. Dark **Monokai** theme by default. No ads, no
-accounts, no network calls, no Cloudflare — just a local page.
+accounts, no network calls, no Cloudflare, no captcha — just a local page.
 
 Ships both as a plain web page and as a Chrome / Brave (MV3) extension.
 
